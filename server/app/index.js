@@ -3,7 +3,7 @@
 var app = require('express')();
 var path = require('path');
 var session = require('express-session');
-var User = require('../api/users/user.model');
+
 
 // "Enhancing" middleware (does not send response, server-side effects only)
 
@@ -21,7 +21,7 @@ app.use(session({
 }));
 
 app.use(function (req, res, next) {
-  console.log('session', req.session);
+  // console.log('session', req.session);
   next();
 });
 
@@ -31,20 +31,7 @@ app.use(function (req, res, next) {
 //   next();
 // });
 
-app.post('/login', function(req, res, next){
-  User.findOne({
-    where: req.body
-  })
-  .then(function(user){
-    if (!user) {
-      res.sendStatus(401)
-    } else{
-      req.session.userId = user.id
-      res.sendStatus(204)
-    }
-  })
-  .catch(next)
-})
+
 
 // "Responding" middleware (may send a response back to client)
 

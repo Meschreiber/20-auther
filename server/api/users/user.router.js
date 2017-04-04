@@ -6,6 +6,7 @@ var HttpError = require('../../utils/HttpError');
 var User = require('./user.model');
 var Story = require('../stories/story.model');
 
+
 router.param('id', function (req, res, next, id) {
   User.findById(id)
   .then(function (user) {

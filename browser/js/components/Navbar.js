@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link, browserHistory } from 'react-router';
+import { signoutUser } from '../redux/login'
 
 /* -----------------    COMPONENT     ------------------ */
 
@@ -78,8 +79,10 @@ const mapProps = null;
 
 const mapDispatch = dispatch => ({
   logout: () => {
-    console.log('You signed out. Sorta.');
-    browserHistory.push('/');
+    console.log('You hit the button!!!')
+    // Why do we need to dispatch AGAIN here?????
+    // signoutUser is actually dispatching as well.
+    return dispatch(signoutUser())
   }
 });
 

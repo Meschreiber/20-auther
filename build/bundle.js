@@ -25990,7 +25990,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.signoutUser = exports.signinUser = exports.loginUser = undefined;
+	exports.fetchCurrentUser = exports.signoutUser = exports.signinUser = exports.loginUser = undefined;
 	exports.default = reducer;
 	
 	var _axios = __webpack_require__(219);
@@ -26071,6 +26071,16 @@
 	    });
 	  };
 	};
+	
+	var fetchCurrentUser = exports.fetchCurrentUser = function fetchCurrentUser() {
+	  return function (dispatch) {
+	    _axios2.default.get('/api/auth/me').then(function (res) {
+	      return dispatch(login(res.data));
+	    }).catch(function (err) {
+	      return console.error('did not fetch current user', err);
+	    });
+	  };
+	};
 
 /***/ },
 /* 246 */
@@ -26126,6 +26136,8 @@
 	
 	var _stories = __webpack_require__(244);
 	
+	var _login = __webpack_require__(245);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	/* -----------------    COMPONENT     ------------------ */
@@ -26160,7 +26172,7 @@
 	    fetchInitialData: function fetchInitialData() {
 	      dispatch((0, _users.fetchUsers)());
 	      dispatch((0, _stories.fetchStories)());
-	      // what other data might we want to fetch on app load?
+	      dispatch((0, _login.fetchCurrentUser)());
 	    },
 	    onStoryEnter: function onStoryEnter(nextRouterState) {
 	      var storyId = nextRouterState.params.id;
@@ -31847,8 +31859,8 @@
 	            ),
 	            _react2.default.createElement(
 	              'span',
-	              { disabled: !this.props.loggedInUser.email },
-	              this.props.loggedInUser.email
+	              { disabled: !this.props.loggedInUser },
+	              this.props.loggedInUser ? this.props.loggedInUser.email : null
 	            ),
 	            this.renderLogout(),
 	            this.renderLoginSignup()

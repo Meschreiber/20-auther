@@ -37,7 +37,7 @@ class Navbar extends React.Component {
                 <Link to="/stories" activeClassName="active">stories</Link>
               </li>
             </ul>
-            <span disabled={!this.props.loggedInUser.email}>{this.props.loggedInUser.email}</span>
+            <span disabled={!this.props.loggedInUser}>{this.props.loggedInUser ? this.props.loggedInUser.email : null }</span>
             { this.renderLogout() }
             { this.renderLoginSignup() }
           </div>

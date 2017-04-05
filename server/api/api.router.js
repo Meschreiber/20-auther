@@ -28,4 +28,14 @@ router.put('/logout', function(req, res, next) {
   res.sendStatus(204)
 })
 
+router.get('/auth/me', function(req, res, next) {
+  User.findOne({
+    where: {
+      id: req.session.userId
+    }
+  })
+  .then((user) => res.send(user))
+  .catch(next)
+})
+
 module.exports = router;

@@ -36,7 +36,6 @@ export default function reducer (users = [], action) {
         action.user.id === user.id ? action.user : user
       ));
 
-
     default:
       return users;
   }

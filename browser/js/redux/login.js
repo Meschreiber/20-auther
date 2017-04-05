@@ -59,3 +59,9 @@ export const signoutUser = () => dispatch => {
        })
        .catch(err => console.error(`Sign out unsuccessful`, err));
 };
+
+export const fetchCurrentUser = () => dispatch => {
+  axios.get('/api/auth/me')
+    .then(res => dispatch(login(res.data)))
+    .catch(err => console.error('did not fetch current user', err))
+}

@@ -25990,7 +25990,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.loginUser = undefined;
+	exports.signoutUser = exports.signinUser = exports.loginUser = undefined;
 	exports.default = reducer;
 	
 	var _axios = __webpack_require__(219);
@@ -26002,11 +26002,19 @@
 	/* -----------------    ACTIONS     ------------------ */
 	
 	var SET_CURRENT_USER = 'SET_CURRENT_USER';
+	var SIGN_IN_USER = 'SIGN_IN_USER';
+	var SIGN_OUT_USER = 'SIGN_OUT_USER';
 	
 	/* ------------   ACTION CREATORS     ------------------ */
 	
 	var login = function login(user) {
 	  return { type: SET_CURRENT_USER, user: user };
+	};
+	var signup = function signup(user) {
+	  return { type: SIGN_IN_USER, user: user };
+	};
+	var signout = function signout() {
+	  return { type: SIGN_OUT_USER };
 	};
 	
 	/* ------------       REDUCER     ------------------ */
@@ -26018,6 +26026,10 @@
 	  switch (action.type) {
 	    case SET_CURRENT_USER:
 	      return action.user;
+	    case SIGN_IN_USER:
+	      return action.user;
+	    case SIGN_OUT_USER:
+	      return null;
 	    default:
 	      return currentUser;
 	  }
@@ -26027,13 +26039,35 @@
 	
 	var loginUser = exports.loginUser = function loginUser(user) {
 	  return function (dispatch) {
-	    console.log('from dispatch', user);
+	    // console.log('from dispatch', user)
 	    _axios2.default.post('/api/login', user).then(function (res) {
 	      res.data = user;
 	      //    console.log('from inside axios!!!!!', res)
 	      dispatch(login(res.data));
 	    }).catch(function (err) {
 	      return console.error('Login unsuccessful', err);
+	    });
+	  };
+	};
+	
+	var signinUser = exports.signinUser = function signinUser(user) {
+	  return function (dispatch) {
+	    _axios2.default.post('/api/users', user).then(function (res) {
+	      console.log('from inside axios!!!!!', res);
+	      dispatch(signup(res.data));
+	    }).catch(function (err) {
+	      return console.error('SignUp unsuccessful', err);
+	    });
+	  };
+	};
+	
+	var signoutUser = exports.signoutUser = function signoutUser() {
+	  return function (dispatch) {
+	    _axios2.default.put('/api/logout').then(function (res) {
+	      console.log('inside signoutUser!!!!');
+	      dispatch(signout());
+	    }).catch(function (err) {
+	      return console.error('Sign out unsuccessful', err);
 	    });
 	  };
 	};
@@ -31732,6 +31766,8 @@
 	
 	var _reactRouter = __webpack_require__(247);
 	
+	var _login = __webpack_require__(245);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -31872,8 +31908,9 @@
 	var mapDispatch = function mapDispatch(dispatch) {
 	  return {
 	    logout: function logout() {
-	      console.log('You signed out. Sorta.');
-	      _reactRouter.browserHistory.push('/');
+	      console.log('You hit the button!!!');
+	      return dispatch((0, _login.signoutUser)());
+	      // browserHistory.push('/');
 	    }
 	  };
 	};
@@ -32257,6 +32294,8 @@
 	
 	var _reactRouter = __webpack_require__(247);
 	
+	var _login = __webpack_require__(245);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -32373,7 +32412,10 @@
 	      var message = this.props.message;
 	
 	      event.preventDefault();
-	      console.log(message + ' isn\'t implemented yet');
+	      if (event.target.email.value && event.target.password.value) {
+	        var user = { email: event.target.email.value, password: event.target.password.value };
+	        this.props.signinUser(user);
+	      }
 	    }
 	  }]);
 	
@@ -32385,7 +32427,7 @@
 	var mapState = function mapState() {
 	  return { message: 'Sign up' };
 	};
-	var mapDispatch = null;
+	var mapDispatch = { signinUser: _login.signinUser };
 	
 	exports.default = (0, _reactRedux.connect)(mapState, mapDispatch)(Signup);
 

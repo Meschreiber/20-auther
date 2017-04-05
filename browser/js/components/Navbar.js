@@ -37,6 +37,7 @@ class Navbar extends React.Component {
                 <Link to="/stories" activeClassName="active">stories</Link>
               </li>
             </ul>
+            <span disabled={!this.props.loggedInUser.email}>{this.props.loggedInUser.email}</span>
             { this.renderLogout() }
             { this.renderLoginSignup() }
           </div>
@@ -75,7 +76,7 @@ class Navbar extends React.Component {
 
 /* -----------------    CONTAINER     ------------------ */
 
-const mapProps = null;
+const mapProps = ({loggedInUser}) => ({loggedInUser})
 
 const mapDispatch = dispatch => ({
   logout: () => {

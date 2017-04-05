@@ -31845,6 +31845,11 @@
 	                )
 	              )
 	            ),
+	            _react2.default.createElement(
+	              'span',
+	              { disabled: !this.props.loggedInUser.email },
+	              this.props.loggedInUser.email
+	            ),
 	            this.renderLogout(),
 	            this.renderLoginSignup()
 	          )
@@ -31903,14 +31908,18 @@
 	
 	/* -----------------    CONTAINER     ------------------ */
 	
-	var mapProps = null;
+	var mapProps = function mapProps(_ref) {
+	  var loggedInUser = _ref.loggedInUser;
+	  return { loggedInUser: loggedInUser };
+	};
 	
 	var mapDispatch = function mapDispatch(dispatch) {
 	  return {
 	    logout: function logout() {
 	      console.log('You hit the button!!!');
+	      // Why do we need to dispatch AGAIN here?????
+	      // signoutUser is actually dispatching as well.
 	      return dispatch((0, _login.signoutUser)());
-	      // browserHistory.push('/');
 	    }
 	  };
 	};
@@ -50194,9 +50203,12 @@
 	
 	    _this.state = {
 	      title: '',
-	      name: ''
+	      name: '',
+	      selectedUser: props.users.filter(function (user) {
+	        return props.loggedInUser.email === user.email;
+	      }) || null
 	    };
-	
+	    console.log('from constructor', _this.state);
 	    _this.filterStory = _this.filterStory.bind(_this);
 	    _this.renderStorySearch = _this.renderStorySearch.bind(_this);
 	    _this.renderNewStoryWidget = _this.renderNewStoryWidget.bind(_this);
@@ -50283,6 +50295,7 @@
 	            'li',
 	            null,
 	            _react2.default.createElement('input', {
+	              disabled: !this.props.loggedInUser.email,
 	              name: 'title',
 	              type: 'text',
 	              className: 'form-like large-font',
@@ -50303,13 +50316,17 @@
 	            null,
 	            _react2.default.createElement(
 	              'select',
-	              { name: 'author_id', defaultValue: '', required: true },
+	              { disabled: !this.props.loggedInUser.email, name: 'author_id', defaultValue: '', required: true },
 	              _react2.default.createElement(
 	                'option',
 	                { value: '', disabled: true },
 	                '(select an author)'
 	              ),
-	              this.props.users.map(function (user) {
+	              this.props.loggedInUser.email ? _react2.default.createElement(
+	                'option',
+	                { key: this.state.selectedUser[0].name, value: this.state.selectedUser[0].name },
+	                this.state.selectedUser[0].name
+	              ) : this.props.users.map(function (user) {
 	                return _react2.default.createElement(
 	                  'option',
 	                  { key: user.id, value: user.id },
@@ -50359,8 +50376,9 @@
 	
 	var mapState = function mapState(_ref) {
 	  var users = _ref.users,
-	      stories = _ref.stories;
-	  return { users: users, stories: stories };
+	      stories = _ref.stories,
+	      loggedInUser = _ref.loggedInUser;
+	  return { users: users, stories: stories, loggedInUser: loggedInUser };
 	};
 	
 	var mapDispatch = { addStory: _stories.addStory };

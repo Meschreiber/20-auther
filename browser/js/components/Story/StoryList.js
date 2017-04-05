@@ -12,28 +12,31 @@ class StoryList extends React.Component {
 
     this.state = {
       title: '',
-      name: ''
+      name: '',
+      selectedUser: props.users.filter((user) => (props.loggedInUser.email === user.email)) || null
     };
-
+    console.log('from constructor', this.state);
     this.filterStory = this.filterStory.bind(this);
     this.renderStorySearch = this.renderStorySearch.bind(this);
     this.renderNewStoryWidget = this.renderNewStoryWidget.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
   }
 
+  
+
   render() {
     return (
       <div className="container">
-        { this.renderStorySearch() }
+        {this.renderStorySearch()}
         <br />
 
         <ul className="list-group">
-        { this.renderNewStoryWidget() }
-        {
-          this.props.stories
-          .filter(this.filterStory)
-          .map(story => <StoryItem story={story} key={story.id} />)
-        }
+          {this.renderNewStoryWidget()}
+          {
+            this.props.stories
+              .filter(this.filterStory)
+              .map(story => <StoryItem story={story} key={story.id} />)
+          }
         </ul>
       </div>
     );
@@ -74,6 +77,7 @@ class StoryList extends React.Component {
         <ul className="list-inline">
           <li>
             <input
+              disabled={!this.props.loggedInUser.email}
               name="title"
               type="text"
               className="form-like large-font"
@@ -84,10 +88,10 @@ class StoryList extends React.Component {
             <span>by</span>
           </li>
           <li>
-            <select name="author_id" defaultValue="" required>
+            <select disabled={!this.props.loggedInUser.email} name="author_id" defaultValue="" required>
               <option value="" disabled>(select an author)</option>
-              {
-                this.props.users.map(user => (
+              { (this.props.loggedInUser.email) ? <option key={this.state.selectedUser[0].name} value={this.state.selectedUser[0].name}>{this.state.selectedUser[0].name}</option>
+              : this.props.users.map(user => (
                   <option key={user.id} value={user.id}>{user.name}</option>
                 ))
               }
@@ -95,10 +99,10 @@ class StoryList extends React.Component {
           </li>
         </ul>
         <button
-            type="submit"
-            className="btn btn-warning btn-xs pull-right">
-            <span className="glyphicon glyphicon-plus" />
-         </button>
+          type="submit"
+          className="btn btn-warning btn-xs pull-right">
+          <span className="glyphicon glyphicon-plus" />
+        </button>
       </form>
     );
   }
@@ -110,7 +114,7 @@ class StoryList extends React.Component {
     const nameMatch = new RegExp(this.state.name, 'i');
 
     return titleMatch.test(story.title)
-        && nameMatch.test(author_name);
+      && nameMatch.test(author_name);
   }
 
   onSubmit(event) {
@@ -127,7 +131,7 @@ class StoryList extends React.Component {
 
 /* -----------------    CONTAINER     ------------------ */
 
-const mapState = ({ users, stories }) => ({ users, stories });
+const mapState = ({ users, stories, loggedInUser }) => ({ users, stories, loggedInUser });
 
 const mapDispatch = { addStory };
 
